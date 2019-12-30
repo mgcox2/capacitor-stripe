@@ -1,5 +1,6 @@
 {
   "name": "@capacitor-stripe/source",
+  "version": "0.1.0",
   "private": true,
   "devDependencies": {
     "@types/chalk": "^2.2.0",
