@@ -101,6 +101,20 @@ class Stripe : Plugin() {
         stripeInstance.createToken(card, callback)
     }
 
+    private fun createBankAccountCopy(call: JSObject, bankAccount: BankAccount): BankAccount {
+        return bankAccount.copy(
+            call.getString("account_number"),
+            call.getString("account_holder_name"),
+            call.getString("account_holder_type"),
+            "",
+            call.getString("country"),
+            call.getString("currency"),
+            "",
+            "",
+            call.getString("routing_number")
+        )
+    }
+
     @PluginMethod
     fun createBankAccountToken(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
@@ -115,19 +129,9 @@ class Stripe : Plugin() {
                 call.getString("routing_number")
         )
 
-        val bankAccount2 = bankAccount.copy(
-            call.getString("account_number"),
-            call.getString("account_holder_name"),
-            call.getString("account_holder_type"),
-            "",
-            call.getString("country"),
-            call.getString("currency"),
-            "",
-            "",
-            call.getString("routing_number")
-        )
+       val bankAccountCopy = createBankAccountCopy(call.data, bankAccount)
 
-        stripeInstance.createBankAccountToken(bankAccount2, object : ApiResultCallback<Token> {
+        stripeInstance.createBankAccountToken(bankAccountCopy, object : ApiResultCallback<Token> {
             override fun onSuccess(result: Token) {
                 val tokenJs = JSObject()
 
